@@ -1,0 +1,15 @@
+= Gitlab-Ci Property Order Recipe
+
+Consistent property order in `.gitlab-ci.yml` files.
+
+== What it does
+
+Reorders top-level keys (global CI settings, then job definitions) and keys within each job according to a configurable order. Unknown keys are appended at the end in their original relative order.
+
+=== Default global key order
+
+`include` → `image` → `services` → `stages` → `workflow` → `variables` → `default` → `cache` → `before_script` → `after_script` → _(job definitions)_
+
+=== Default job key order
+
+`extends` → `image` → `services` → `stage` → `needs` → `dependencies` → `variables` → `environment` → `cache` → `before_script` → `script` → `after_script` → `artifacts` → `rules` → `only` → `except` → `when` → `timeout` → `retry` → `tags` → `allow_failure` → `interruptible` → `parallel` → …

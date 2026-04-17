@@ -1,0 +1,95 @@
+# Example .gitlab-ci.yml with intentionally disordered keys.
+# Run the recipe to see it reordered to the canonical form.
+
+before_script:
+  - echo "Global before_script – runs before every job"
+  - export PATH="$PATH:/usr/local/bin"
+
+my-deploy-job:
+  when: manual
+  script:
+    - ./scripts/deploy.sh $CI_ENVIRONMENT_NAME
+  allow_failure: false
+  environment:
+    name: production
+    url: https://example.com
+  stage: deploy
+  image: alpine:latest
+  needs:
+    - my-build-job
+    - my-test-job
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+  retry: 2
+  tags:
+    - docker
+    - production
+
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  GIT_DEPTH: "0"
+  APP_NAME: my-app
+
+image: alpine:3.18
+
+services:
+  - docker:24-dind
+
+after_script:
+  - echo "Global after_script – runs after every job"
+
+include:
+  - project: 'my-group/shared-ci'
+    file: '/templates/security-scanning.yml'
+  - template: 'SAST.gitlab-ci.yml'
+
+cache:
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - .cache/
+
+my-build-job:
+  tags:
+    - docker
+  script:
+    - npm ci
+    - npm run build
+  stage: build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+  image: node:20-alpine
+  variables:
+    NODE_ENV: production
+
+my-test-job:
+  script:
+    - npm run test:ci
+  coverage: '/Coverage: \d+\.\d+%/'
+  stage: test
+  needs:
+    - my-build-job
+  image: node:20-alpine
+  artifacts:
+    reports:
+      junit: coverage/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

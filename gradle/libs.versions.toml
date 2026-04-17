@@ -1,0 +1,17 @@
+[versions]
+openrewrite-bom = "8.79.5"
+rewrite-plugin = "7.30.0"
+junit-bom = "5.14.0"
+
+[plugins]
+rewrite = { id = "org.openrewrite.rewrite", version.ref = "rewrite-plugin" }
+
+[libraries]
+openrewrite-bom = { module = "org.openrewrite:rewrite-bom", version.ref = "openrewrite-bom" }
+openrewrite-yaml = { module = "org.openrewrite:rewrite-yaml" }
+openrewrite-test = { module = "org.openrewrite:rewrite-test" }
+openrewrite-java21 = { module = "org.openrewrite:rewrite-java-21" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }

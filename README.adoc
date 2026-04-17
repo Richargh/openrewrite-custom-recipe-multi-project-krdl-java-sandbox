@@ -1,0 +1,84 @@
+= rewrite-gitlab-ci
+:toc: macro
+
+Sandbox that shows how to use link:https://docs.openrewrite.org/[OpenRewrite] with custom recipes.
+
+Provides the following recipes:
+
+* link:rewrite/src/main/java/de/richargh/sandbox/openrewrite/gitlabci/README.adoc[Gitlab-Ci Property Order Recipe]
+
+toc::[]
+
+== Usage in a consuming project
+
+Add the recipe library to your project's build and activate the OpenRewrite Gradle plugin:
+
+[source,kotlin]
+----
+// build.gradle.kts
+plugins {
+    id("org.openrewrite.rewrite") version "x.x.x"
+}
+
+rewrite {
+    activeRecipe("de.richargh.sandbox.openrewrite.gitlabci.GitLabCiPropertyOrderRecipe")
+}
+
+dependencies {
+    rewrite(project(":rewrite"))
+}
+----
+
+=== Preview changes without modifying files
+
+[source,bash]
+----
+./gradlew rewriteDryRun
+----
+
+Prints a diff of what would change. No files are modified.
+
+=== Apply changes
+
+[source,bash]
+----
+./gradlew rewriteRun
+----
+
+=== Configure the recipe
+
+In your project's `rewrite.yml`:
+
+[source,yaml]
+----
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.example.MyGitLabCiOrder
+recipeList:
+  - com.example.gitlabci.GitLabCiPropertyOrderRecipe:
+      globalKeyOrder:
+        - include
+        - image
+        - stages
+        - variables
+        - before_script
+        - after_script
+      jobKeyOrder:
+        - extends
+        - image
+        - stage
+        - script
+        - artifacts
+----
+
+Both options are optional; omitting them applies the defaults.
+
+== Development
+
+[source,bash]
+----
+./gradlew :rewrite:test     # run tests
+./gradlew :rewrite:build    # compile + test
+----
+
+An intentionally disordered example file lives in `example/.gitlab-ci.yml`.
