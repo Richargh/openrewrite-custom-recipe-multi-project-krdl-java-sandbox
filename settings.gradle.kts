@@ -1,4 +1,4 @@
-rootProject.name = "openrewrite-recipe-sandbox"
+rootProject.name = "openrewrite-custom-recipe-multi-project-sandbox-krdl-java-sandbox"
 
 include("rewrite")
 
