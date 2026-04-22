@@ -1,4 +1,4 @@
-= rewrite-gitlab-ci
+= OpenRewrite custom recipes in a Gradle multi-project setup (Sandbox)
 :toc: macro
 
 Sandbox that shows how to use link:https://docs.openrewrite.org/[OpenRewrite] with custom recipes.
@@ -6,6 +6,11 @@ Sandbox that shows how to use link:https://docs.openrewrite.org/[OpenRewrite] wi
 Provides the following recipes:
 
 * link:rewrite/src/main/java/de/richargh/sandbox/openrewrite/gitlabci/README.adoc[Gitlab-Ci Property Order Recipe]
+
+Sister project to link:https://github.com/Richargh/openrewrite-custom-recipe-root-project-krdl-java-sandbox
+[OpenRewrite custom recipe in Gradle root-project setup].
+This project shows how to do the same, when we have a Gradle multi-project setup (i.e. `rewrite/` is a sub-project,
+next to other gradle projects).
 
 toc::[]
 
